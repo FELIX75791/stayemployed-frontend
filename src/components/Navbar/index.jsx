@@ -22,13 +22,12 @@ const Navbar = () => {
         <>
             <Nav>
                 <Bars />
-
                 <NavMenu>
                     <NavLink to="/JobSearch" >
                         Search Job
                     </NavLink>
                     <NavLink to="/Applications" activeStyle>
-                        Applications
+                        Track Applications
                     </NavLink>
                     {/* Second Nav */}
                     {/* <NavBtnLink to='/sign-in'>Sign In</NavBtnLink> */}

@@ -59,8 +59,9 @@ export default function LogIn(props) {
 
   
   const login = async (email, password) => {
-    try {
-      const response = await fetch(globalVal.baseUrl + '/login', {
+    // try {
+    const response = await
+      fetch(globalVal.baseUrl + '/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -70,7 +71,7 @@ export default function LogIn(props) {
           'password': password}),
        });
 
-      if (response.status === 401) {
+      if (!response.ok) {
         // fetch(globalVal.baseUrl + '/signup', {
         //   method: 'POST',
         //   headers: {
@@ -82,17 +83,17 @@ export default function LogIn(props) {
         console.log("Invalid email or password.");
       }
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.detail || 'Login failed');
-      }
+      // if (!response.ok) {
+      //   const errorData = await response.json();
+      //   throw new Error(errorData.detail || 'Login failed');
+      // }
 
       const data = await response.json();
       console.log('Token:', data.access_token);
       // Store the token or handle the response as needed
-    } catch (error) {
-      console.error('Login failed:', error.message);
-    }
+    // } catch (error) {
+    //   console.error('Login failed:', error.message);
+    // }
   };
 
     
@@ -133,59 +134,42 @@ export default function LogIn(props) {
                   noValidate
                   autoComplete="off"
                   >
-                  {/* <TextField
-                          id="outlined-required"
-                          label="Email:"
-                          variant="standard"
-                          value={email}
-                          required
-                          onChange={(e) => {
-                              setEmail(e.target.value);
-                    }} />
-                  <TextField
-                          id="outlined-required"
-                          label="Password:"
-                          variant="standard"
-                          value={password}
-                          required
-                          onChange={(e) => {
-                              setPassword(e.target.value);
-                  }} /> */}
                   <FormControl fullWidth sx={{ m: 1 }} variant="standard">
                     <InputLabel >Email</InputLabel>
                     <Input
                       id="email"
                       value={email}
                       required
-                      error={errorLogIn ? true : false}
+                    error={errorLogIn ? true : false}
+                    inputProps={{type: "email",}}
                       onChange={(e) => {
                         setEmail(e.target.value);
                       }}  />
                   </FormControl>
                   <FormControl fullWidth sx={{ m: 1 }} variant="standard">
-                      <InputLabel htmlFor="standard-adornment-password">Password</InputLabel>
-                      <Input
-                        id="password"
-                        type={showPassword ? 'text' : 'password'}
-                        value={password}
-                        required
-                        error={errorLogIn ? true : false}
-                        onChange={(e) => {
-                          setPassword(e.target.value);
-                        }}
-                        endAdornment={
-                          <InputAdornment position="end">
-                            <IconButton
-                              aria-label="toggle password visibility"
-                              onClick={handleClickShowPassword}
-                              onMouseDown={handleMouseDownPassword}
-                              onMouseUp={handleMouseUpPassword}
-                            >
-                              {showPassword ? <VisibilityOff /> : <Visibility />}
-                            </IconButton>
-                          </InputAdornment>
-                        }
-                      />
+                    <InputLabel htmlFor="standard-adornment-password">Password</InputLabel>
+                    <Input
+                      id="password"
+                      type={showPassword ? 'text' : 'password'}
+                      value={password}
+                      required
+                      error={errorLogIn ? true : false}
+                      onChange={(e) => {
+                        setPassword(e.target.value);
+                      }}
+                      endAdornment={
+                        <InputAdornment position="end">
+                          <IconButton
+                            aria-label="toggle password visibility"
+                            onClick={handleClickShowPassword}
+                            onMouseDown={handleMouseDownPassword}
+                            onMouseUp={handleMouseUpPassword}
+                          >
+                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                          </IconButton>
+                        </InputAdornment>
+                      }
+                    />
                 </FormControl>
                 <div>
                   <h9>
