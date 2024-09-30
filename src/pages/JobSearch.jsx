@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
+import JobList from '../components/JobList.jsx';
 
 const JobSearch = () => {
 
@@ -11,7 +12,7 @@ return (
       height: '100vh'
     }}
 	>
-	<h1>Job Search</h1>
+	<JobList/>
 	</div>
 );
 };

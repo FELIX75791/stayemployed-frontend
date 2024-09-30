@@ -1,7 +1,6 @@
-import React from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 
-
-const Home = () => {
+export default function SignUp(props) {
   return (
     <div
       style={{
@@ -11,9 +10,7 @@ const Home = () => {
         height: '100vh'
       }}
     >
-      <h1>hello</h1>
+      <h1>Sign Up here</h1>
     </div>
   );
-};
-
-export default Home;
+}

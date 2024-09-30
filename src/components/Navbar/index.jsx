@@ -7,8 +7,17 @@ import {
     NavBtn,
     NavBtnLink,
 } from "./NavbarElements";
-
+import LogIn from "../LogIn";
 const Navbar = () => {
+  const [open, setOpen] = React.useState(false);
+	// const navigate = useNavigate();
+	const handleClickOpen = () => {
+		setOpen(true);
+		// navigate('/UploadData');
+  };
+  const handleClose = () => {
+		setOpen(false);
+	};
     return (
         <>
             <Nav>
@@ -25,9 +34,10 @@ const Navbar = () => {
                     {/* <NavBtnLink to='/sign-in'>Sign In</NavBtnLink> */}
                 </NavMenu>
                 <NavBtn>
-                    <NavBtnLink to="/signin">
+                    <NavBtnLink to="/LogIn" onClick={handleClickOpen}>
                         Log In / Sign up
                     </NavBtnLink>
+                    <LogIn open={open} handleClose={handleClose} />
                 </NavBtn>
             </Nav>
         </>
