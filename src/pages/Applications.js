@@ -1,4 +1,5 @@
 import React from 'react';
+import TrackApplications from '../components/TrackApplication';
 
 const Applications = () => {
 return (
@@ -10,7 +11,7 @@ return (
       height: '100vh'
     }}
 	>
-	<h1>Applications</h1>
+  <TrackApplications/>
 	</div>
 );
 };

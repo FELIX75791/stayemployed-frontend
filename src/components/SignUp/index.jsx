@@ -1,4 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
+import SignUpForm from './SignUpForm';
 
 export default function SignUp(props) {
   return (
@@ -10,7 +11,7 @@ export default function SignUp(props) {
         height: '100vh'
       }}
     >
-      <h1>Sign Up here</h1>
+      <SignUpForm />
     </div>
   );
 }

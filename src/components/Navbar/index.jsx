@@ -23,6 +23,9 @@ const Navbar = () => {
             <Nav>
                 <Bars />
                 <NavMenu>
+                    <NavLink to="/" >
+                        Dashboard
+                    </NavLink>
                     <NavLink to="/JobSearch" >
                         Search Job
                     </NavLink>

@@ -19,6 +19,8 @@ import Link from '@mui/material/Link';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import Input from '@mui/material/Input';
+import { useAuth } from '../../AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -40,7 +42,8 @@ export default function LogIn(props) {
     const [password, setPassword] = useState("");
     const [option, setOption] = useState();
     const [errorLogIn, setErrorLogIn] = useState(false);
-    // const navigate = useNavigate();
+    const { login } = useAuth();
+    const navigate = useNavigate();
     // var disableUpload = true;
 
     // const [value, setValue] = useState('');
@@ -58,10 +61,10 @@ export default function LogIn(props) {
   };
 
   
-  const login = async (email, password) => {
+  const doLogin = async (email, password) => {
     // try {
     const response = await
-      fetch(globalVal.baseUrl + '/login', {
+      fetch(globalVal.userProfileUrl + '/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -71,25 +74,24 @@ export default function LogIn(props) {
           'password': password}),
        });
 
-      if (!response.ok) {
-        // fetch(globalVal.baseUrl + '/signup', {
-        //   method: 'POST',
-        //   headers: {
-        //     'Content-Type': 'application/json',
-        //   },
-        //   body: JSON.stringify({ name, email, password }),
-        // })
+      // if (!response.ok) {
+      //   setErrorLogIn(true);
+      //   console.log("Invalid email or password.");
+      // }
+
+      if (response.ok) {
+        const data = await response.json();
+        login(data.access_token);
+        console.log(data.access_token);
+        navigate("/");
+        handleClose();
+      } else {
         setErrorLogIn(true);
         console.log("Invalid email or password.");
       }
 
-      // if (!response.ok) {
-      //   const errorData = await response.json();
-      //   throw new Error(errorData.detail || 'Login failed');
-      // }
-
-      const data = await response.json();
-      console.log('Token:', data.access_token);
+      // const data = await response.json();
+      // console.log('Token:', data.access_token);
       // Store the token or handle the response as needed
     // } catch (error) {
     //   console.error('Login failed:', error.message);
@@ -99,7 +101,7 @@ export default function LogIn(props) {
     
     const handleSubmit = (e) => {
       e.preventDefault();
-      login(email, password);  
+      doLogin(email, password);  
     }
 
     const handleClose = () => {

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import JobList from '../components/JobList.jsx';
+import JobList from '../components/JobList';
 
 const JobSearch = () => {
 

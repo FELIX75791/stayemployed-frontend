@@ -1,5 +1,5 @@
 import React from 'react';
-
+import DashBoard from '../components/DashBoard';
 
 const Home = () => {
   return (
@@ -11,7 +11,7 @@ const Home = () => {
         height: '100vh'
       }}
     >
-      <h1>hello</h1>
+      <DashBoard userId={1}/>
     </div>
   );
 };
