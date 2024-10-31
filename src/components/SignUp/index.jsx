@@ -1,7 +1,7 @@
-import React from 'react';
-import DashBoard from '../components/DashBoard';
+import React, { useRef, useState, useEffect } from 'react';
+import SignUpForm from './SignUpForm';
 
-const Home = () => {
+export default function SignUp(props) {
   return (
     <div
       style={{
@@ -11,9 +11,7 @@ const Home = () => {
         height: '100vh'
       }}
     >
-      <DashBoard userId={1}/>
+      <SignUpForm />
     </div>
   );
-};
-
-export default Home;
+}

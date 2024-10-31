@@ -9,7 +9,8 @@ import {
 import Home from "./pages";
 import JobSearch from "./pages/JobSearch";
 import Applications from "./pages/Applications";
-import SignUp from "./pages/signup";
+import LogIn from "./components/LogIn";
+import SignUp from "./components/SignUp";
 
 function App() {
     return (
@@ -22,10 +23,8 @@ function App() {
                     path="/Applications"
                     element={<Applications />}
                 />
-                <Route
-                    path="/sign-up"
-                    element={<SignUp />}
-                />
+            <Route path="/login" element={<LogIn />} />
+            <Route path="/signup" element={<SignUp />} />
             </Routes>
         </Router>
     );
