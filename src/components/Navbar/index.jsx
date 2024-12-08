@@ -8,16 +8,18 @@ import {
     NavBtnLink,
 } from "./NavbarElements";
 import LogIn from "../LogIn";
+
 const Navbar = () => {
-  const [open, setOpen] = React.useState(false);
-	// const navigate = useNavigate();
-	const handleClickOpen = () => {
-		setOpen(true);
-		// navigate('/UploadData');
-  };
-  const handleClose = () => {
-		setOpen(false);
-	};
+    const [open, setOpen] = React.useState(false);
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
     return (
         <>
             <Nav>
@@ -29,11 +31,12 @@ const Navbar = () => {
                     <NavLink to="/JobSearch" >
                         Search Job
                     </NavLink>
-                    <NavLink to="/Applications" activeStyle>
+                    <NavLink to="/Applications">
                         Track Applications
                     </NavLink>
-                    {/* Second Nav */}
-                    {/* <NavBtnLink to='/sign-in'>Sign In</NavBtnLink> */}
+                    <NavLink to="/Profile"> {/* Add Profile Option */}
+                        Profile
+                    </NavLink>
                 </NavMenu>
                 <NavBtn>
                     <NavBtnLink to="/LogIn" onClick={handleClickOpen}>
