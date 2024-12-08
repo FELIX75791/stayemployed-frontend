@@ -11,6 +11,7 @@ import JobSearch from "./pages/JobSearch";
 import Applications from "./pages/Applications";
 import LogIn from "./components/LogIn";
 import SignUp from "./components/SignUp";
+import Profile from "./components/Profile";
 
 function App() {
     return (
@@ -19,12 +20,10 @@ function App() {
             <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/JobSearch" element={<JobSearch />} />
-                <Route
-                    path="/Applications"
-                    element={<Applications />}
-                />
-            <Route path="/login" element={<LogIn />} />
-            <Route path="/signup" element={<SignUp />} />
+                <Route path="/Applications" element={<Applications />} />
+                <Route path="/Profile" element={<Profile />} /> {/* Add Profile route */}
+                <Route path="/login" element={<LogIn />} />
+                <Route path="/signup" element={<SignUp />} />
             </Routes>
         </Router>
     );

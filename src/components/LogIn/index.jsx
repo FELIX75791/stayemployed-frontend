@@ -1,196 +1,126 @@
-import React, {useRef, useState, useEffect} from 'react';
+import React, { useState } from 'react';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import { styled } from '@mui/material/styles';
-import Box from '@mui/material/Box';
-// import IconButton from '@mui/material/IconButton';
-import globalVal from '../../globalVal';
-// import './LogIn.scss';
-import IconButton, { IconButtonProps } from '@mui/material/IconButton';
-import InputAdornment from '@mui/material/InputAdornment';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
-import FilledInput from '@mui/material/FilledInput';
-import Link from '@mui/material/Link';
+import Input from '@mui/material/Input';
+import InputAdornment from '@mui/material/InputAdornment';
+import IconButton from '@mui/material/IconButton';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import Input from '@mui/material/Input';
-import { useAuth } from '../../AuthContext';
 import { useNavigate } from 'react-router-dom';
-
-const VisuallyHiddenInput = styled('input')({
-  clip: 'rect(0 0 0 0)',
-  clipPath: 'inset(50%)',
-  height: 1,
-  overflow: 'hidden',
-  position: 'absolute',
-  bottom: 0,
-  left: 0,
-  whiteSpace: 'nowrap',
-  width: 1,
-});
+import globalVal from "../../globalVal";
 
 export default function LogIn(props) {
-    // upload resume?
-    // const [selectedFile, setSelectedFile] = useState(null);
-    // const [selectedFileName, setSelectedFileName] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [option, setOption] = useState();
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
     const [errorLogIn, setErrorLogIn] = useState(false);
-    const { login } = useAuth();
     const navigate = useNavigate();
-    // var disableUpload = true;
 
-    // const [value, setValue] = useState('');
-  // const [inputValue, setInputValue] = useState('');
-  const [showPassword, setShowPassword] = React.useState(false);
+    const handleClickShowPassword = () => setShowPassword((show) => !show);
+    const handleMouseDownPassword = (event) => event.preventDefault();
 
-  const handleClickShowPassword = () => setShowPassword((show) => !show);
+    const doLogin = async (email, password) => {
+        try {
+            const response = await fetch(globalVal.userProfileUrl + '/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password }),
+            });
 
-  const handleMouseDownPassword = (event) => {
-    event.preventDefault();
-  };
+            if (!response.ok) {
+                throw new Error('Invalid email or password');
+            }
 
-  const handleMouseUpPassword = (event) => {
-    event.preventDefault();
-  };
+            const data = await response.json();
+            const token = data.access_token;
 
-  
-  const doLogin = async (email, password) => {
-    // try {
-    const response = await
-      fetch(globalVal.userProfileUrl + '/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          'email': email,
-          'password': password}),
-       });
+            // Save the JWT token securely
+            localStorage.setItem('authToken', token);
 
-      // if (!response.ok) {
-      //   setErrorLogIn(true);
-      //   console.log("Invalid email or password.");
-      // }
+            // Optionally, redirect the user to the desired page
+            navigate('/dashboard'); // Adjust the path as needed
 
-      if (response.ok) {
-        const data = await response.json();
-        login(data.access_token);
-        console.log(data.access_token);
-        navigate("/");
-        handleClose();
-      } else {
-        setErrorLogIn(true);
-        console.log("Invalid email or password.");
-      }
+            // Reset form state
+            setEmail('');
+            setPassword('');
+            setErrorLogIn(false);
 
-      // const data = await response.json();
-      // console.log('Token:', data.access_token);
-      // Store the token or handle the response as needed
-    // } catch (error) {
-    //   console.error('Login failed:', error.message);
-    // }
-  };
+            // Close the dialog
+            props.handleClose();
+        } catch (error) {
+            setErrorLogIn(true);
+            console.error('Login failed:', error.message);
+        }
+    };
 
-    
     const handleSubmit = (e) => {
-      e.preventDefault();
-      doLogin(email, password);  
-    }
+        e.preventDefault();
+        doLogin(email, password);
+    };
 
     const handleClose = () => {
-        setEmail("");
-        setPassword("");
+        setEmail('');
+        setPassword('');
         setErrorLogIn(false);
         props.handleClose();
-    }
-
-    const [expanded, setExpanded] = React.useState(false);
-
-    // const handleExpandClick = () => {
-    //     setExpanded(!expanded);
-    // };
+    };
 
     return (
-        <div>
-        <Dialog open={props.open} onClose={props.handleClose} fullWidth="true">
-            <DialogTitle>Log into your account:</DialogTitle>
-            
+        <Dialog open={props.open} onClose={handleClose} fullWidth>
+            <DialogTitle>Log into your account</DialogTitle>
             <DialogContent>
-              <div className="input-section" style={{ overflow: "auto",
-                                                        display: "flex",
-                                                        flexDirection: "column",
-                                                        gap: "30px"
-                                                    }}>
-                <Box
-                  component="form"
-                  sx={{
-                      '& .MuiTextField-root': { m: 1, width: '20ch' },
-                  }}
-                  noValidate
-                  autoComplete="off"
-                  >
-                  <FormControl fullWidth sx={{ m: 1 }} variant="standard">
-                    <InputLabel >Email</InputLabel>
+                <FormControl fullWidth margin="normal">
+                    <InputLabel>Email</InputLabel>
                     <Input
-                      id="email"
-                      value={email}
-                      required
-                    error={errorLogIn ? true : false}
-                    inputProps={{type: "email",}}
-                      onChange={(e) => {
-                        setEmail(e.target.value);
-                      }}  />
-                  </FormControl>
-                  <FormControl fullWidth sx={{ m: 1 }} variant="standard">
-                    <InputLabel htmlFor="standard-adornment-password">Password</InputLabel>
-                    <Input
-                      id="password"
-                      type={showPassword ? 'text' : 'password'}
-                      value={password}
-                      required
-                      error={errorLogIn ? true : false}
-                      onChange={(e) => {
-                        setPassword(e.target.value);
-                      }}
-                      endAdornment={
-                        <InputAdornment position="end">
-                          <IconButton
-                            aria-label="toggle password visibility"
-                            onClick={handleClickShowPassword}
-                            onMouseDown={handleMouseDownPassword}
-                            onMouseUp={handleMouseUpPassword}
-                          >
-                            {showPassword ? <VisibilityOff /> : <Visibility />}
-                          </IconButton>
-                        </InputAdornment>
-                      }
+                        id="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        error={errorLogIn}
+                        type="email"
+                        required
                     />
                 </FormControl>
-                <div>
-                  <h9>
-                    {errorLogIn === true ? "Invalid email or password. Please check your credentials or sign up if you don't have an account."
-                        : ""}
-                  </h9>
-                
-                </div>  
-              </Box> 
-              </div>
+                <FormControl fullWidth margin="normal">
+                    <InputLabel>Password</InputLabel>
+                    <Input
+                        id="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        error={errorLogIn}
+                        type={showPassword ? 'text' : 'password'}
+                        required
+                        endAdornment={
+                            <InputAdornment position="end">
+                                <IconButton
+                                    onClick={handleClickShowPassword}
+                                    onMouseDown={handleMouseDownPassword}
+                                >
+                                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                                </IconButton>
+                            </InputAdornment>
+                        }
+                    />
+                </FormControl>
+                {errorLogIn && (
+                    <p style={{ color: 'red' }}>
+                        Invalid email or password. Please try again.
+                    </p>
+                )}
             </DialogContent>
             <DialogActions>
-            <Button onClick={handleClose}>Cancel</Button>
-            <Button onClick={handleSubmit} variant="outlined" autoFocus>Log In</Button>           
+                <Button onClick={handleClose}>Cancel</Button>
+                <Button onClick={handleSubmit} variant="outlined" autoFocus>
+                    Log In
+                </Button>
             </DialogActions>
             <DialogActions>
-            <Link href="/signup">Sign Up Now!</Link> 
+                <Button href="/signup">Sign Up Now!</Button>
             </DialogActions>
         </Dialog>
-        </div>
     );
 }
