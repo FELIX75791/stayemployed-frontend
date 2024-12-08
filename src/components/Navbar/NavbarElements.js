@@ -84,3 +84,23 @@ export const NavBtnLink = styled(Link)`
         color: #808080;
     }
 `;
+
+// New LogoutBtnLink styled component
+export const LogoutBtnLink = styled.button`
+    border-radius: 4px;
+    background: #5060ff;
+    padding: 10px 22px;
+    color: #000000;
+    outline: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    text-decoration: none;
+    /* Second Nav */
+    margin-left: 24px;
+    &:hover {
+        transition: all 0.2s ease-in-out;
+        background: #fff;
+        color: #808080;
+    }
+`;
