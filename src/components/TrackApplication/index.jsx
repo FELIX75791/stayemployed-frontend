@@ -1,13 +1,74 @@
 import React, { useState, useEffect } from "react";
+import styled from "styled-components";
 import Modal from "./Modal";
+
+// Styled Components
+const Container = styled.div`
+    padding: 20px;
+    font-family: Arial, sans-serif;
+`;
+
+const Title = styled.h1`
+    text-align: center;
+    color: #333;
+`;
+
+const Button = styled.button`
+    background-color: ${(props) => props.color || "#5060FF"};
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    margin: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+        background-color: ${(props) => props.hoverColor || "#4050D0"};
+    }
+`;
+
+const Table = styled.table`
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 16px;
+    text-align: left;
+`;
+
+const Thead = styled.thead`
+    background-color: #f4f4f4;
+`;
+
+const Tbody = styled.tbody``;
+
+const Th = styled.th`
+    padding: 12px 15px;
+    border-bottom: 1px solid #ddd;
+`;
+
+const Td = styled.td`
+    padding: 12px 15px;
+    border-bottom: 1px solid #ddd;
+`;
+
+const EmptyRow = styled.tr`
+    text-align: center;
+`;
+
+const Actions = styled.div`
+    display: flex;
+    gap: 10px;
+`;
 
 const TrackApplications = () => {
     const [applications, setApplications] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [selectedApplication, setSelectedApplication] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [modalType, setModalType] = useState(""); // "create", "update", "delete"
+    const [modalType, setModalType] = useState(""); // "create" or "update"
+    const [selectedApplication, setSelectedApplication] = useState(null);
 
     const fetchApplications = async () => {
         try {
@@ -22,6 +83,10 @@ const TrackApplications = () => {
 
             if (!response.ok) {
                 if (response.status === 401) throw new Error("Unauthorized. Please log in again.");
+                if (response.status === 404) {
+                    setApplications([]);
+                    return;
+                }
                 throw new Error("Failed to fetch applications.");
             }
 
@@ -34,14 +99,19 @@ const TrackApplications = () => {
         }
     };
 
+    useEffect(() => {
+        fetchApplications();
+    }, []);
+
     const handleCreate = () => {
         setModalType("create");
+        setSelectedApplication(null);
         setIsModalOpen(true);
     };
 
     const handleUpdate = (application) => {
-        setSelectedApplication(application);
         setModalType("update");
+        setSelectedApplication(application);
         setIsModalOpen(true);
     };
 
@@ -64,52 +134,54 @@ const TrackApplications = () => {
         }
     };
 
-    useEffect(() => {
-        fetchApplications();
-    }, []);
-
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error: {error}</p>;
 
     return (
-        <div>
-            <h1>Track your Applications</h1>
-            <button onClick={handleCreate}>Create Application</button>
-            <table border="1" style={{ width: "100%", marginTop: "20px" }}>
-                <thead>
-                <tr>
-                    <th>Application ID</th>
-                    <th>Job ID</th>
-                    <th>Status</th>
-                    <th>Resume URL</th>
-                    <th>Application Date</th>
-                    <th>Notes</th>
-                    <th>Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                {applications.length === 0 ? (
+        <Container>
+            <Title>Track your Applications</Title>
+            <Button onClick={handleCreate}>Create Application</Button>
+            <Table>
+                <Thead>
                     <tr>
-                        <td colSpan="7" style={{ textAlign: "center" }}>No applications found.</td>
+                        <Th>Application ID</Th>
+                        <Th>Job ID</Th>
+                        <Th>Status</Th>
+                        <Th>Resume URL</Th>
+                        <Th>Application Date</Th>
+                        <Th>Notes</Th>
+                        <Th>Actions</Th>
                     </tr>
-                ) : (
-                    applications.slice(0, 10).map((application) => (
-                        <tr key={application.application_id}>
-                            <td>{application.application_id}</td>
-                            <td>{application.job_id}</td>
-                            <td>{application.status}</td>
-                            <td>{application.resume_url || "Not provided"}</td>
-                            <td>{new Date(application.application_date).toLocaleDateString()}</td>
-                            <td>{application.notes || "No notes"}</td>
-                            <td>
-                                <button onClick={() => handleUpdate(application)}>Update</button>
-                                <button onClick={() => handleDelete(application.application_id)}>Delete</button>
-                            </td>
-                        </tr>
-                    ))
-                )}
-                </tbody>
-            </table>
+                </Thead>
+                <Tbody>
+                    {applications.length === 0 ? (
+                        <EmptyRow>
+                            <Td colSpan="7">No applications found.</Td>
+                        </EmptyRow>
+                    ) : (
+                        applications.slice(0, 10).map((application) => (
+                            <tr key={application.application_id}>
+                                <Td>{application.application_id}</Td>
+                                <Td>{application.job_id}</Td>
+                                <Td>{application.status}</Td>
+                                <Td>{application.resume_url || "Not provided"}</Td>
+                                <Td>{new Date(application.application_date).toLocaleDateString()}</Td>
+                                <Td>{application.notes || "No notes"}</Td>
+                                <Td>
+                                    <Actions>
+                                        <Button color="#28a745" hoverColor="#218838" onClick={() => handleUpdate(application)}>
+                                            Update
+                                        </Button>
+                                        <Button color="#dc3545" hoverColor="#c82333" onClick={() => handleDelete(application.application_id)}>
+                                            Delete
+                                        </Button>
+                                    </Actions>
+                                </Td>
+                            </tr>
+                        ))
+                    )}
+                </Tbody>
+            </Table>
             {isModalOpen && (
                 <Modal
                     type={modalType}
@@ -118,9 +190,8 @@ const TrackApplications = () => {
                     refreshApplications={fetchApplications}
                 />
             )}
-        </div>
+        </Container>
     );
 };
 
 export default TrackApplications;
-
