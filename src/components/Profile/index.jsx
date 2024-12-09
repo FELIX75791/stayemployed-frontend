@@ -111,6 +111,22 @@ const Textarea = styled.textarea`
     }
 `;
 
+const Select = styled.select`
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    background-color: white;
+
+    &:focus {
+        outline: none;
+        border-color: #5060ff;
+        box-shadow: 0 0 3px rgba(80, 96, 255, 0.5);
+    }
+`;
+
 const ModalActions = styled.div`
     display: flex;
     justify-content: space-between;
@@ -138,6 +154,7 @@ const Profile = () => {
     const [isUpdateOpen, setIsUpdateOpen] = useState(false);
     const [resumeUrl, setResumeUrl] = useState("");
     const [jobPreferences, setJobPreferences] = useState("");
+    const [notificationPreference, setNotificationPreference] = useState("enabled");
 
     useEffect(() => {
         const fetchUserInfo = async () => {
@@ -162,6 +179,9 @@ const Profile = () => {
 
                 const data = await response.json();
                 setUserInfo(data);
+                setResumeUrl(data.resume_url || "");
+                setJobPreferences(JSON.stringify(data.job_preferences || {}));
+                setNotificationPreference(data.notification_preference ? "enabled" : "disabled");
             } catch (err) {
                 setError(err.message);
             }
@@ -184,6 +204,7 @@ const Profile = () => {
                 body: JSON.stringify({
                     resume_url: resumeUrl,
                     job_preferences: JSON.parse(jobPreferences || "{}"),
+                    notification_preference: notificationPreference === "enabled",
                 }),
             });
 
@@ -196,6 +217,7 @@ const Profile = () => {
 
             const updatedData = await response.json();
             setUserInfo(updatedData);
+            setNotificationPreference(updatedData.notification_preference ? "enabled" : "disabled");
             setIsUpdateOpen(false);
             alert("Profile updated successfully!");
         } catch (err) {
@@ -213,6 +235,7 @@ const Profile = () => {
             <InfoItem><strong>Email:</strong> {userInfo.email}</InfoItem>
             <InfoItem><strong>Resume URL:</strong> {userInfo.resume_url || "Not provided"}</InfoItem>
             <InfoItem><strong>Job Preferences:</strong> {JSON.stringify(userInfo.job_preferences) || "Not specified"}</InfoItem>
+            <InfoItem><strong>Notification Preference:</strong> {notificationPreference === "enabled" ? "Enabled" : "Disabled"}</InfoItem>
             <UpdateButton onClick={() => setIsUpdateOpen(true)}>Update Profile</UpdateButton>
 
             {isUpdateOpen && (
@@ -231,6 +254,14 @@ const Profile = () => {
                             value={jobPreferences}
                             onChange={(e) => setJobPreferences(e.target.value)}
                         />
+                        <InputLabel>Notification Preference:</InputLabel>
+                        <Select
+                            value={notificationPreference}
+                            onChange={(e) => setNotificationPreference(e.target.value)}
+                        >
+                            <option value="enabled">Enabled</option>
+                            <option value="disabled">Disabled</option>
+                        </Select>
                         <ModalActions>
                             <ActionButton onClick={handleUpdate}>Save</ActionButton>
                             <ActionButton color="#dc3545" hoverColor="#c82333" onClick={() => setIsUpdateOpen(false)}>
