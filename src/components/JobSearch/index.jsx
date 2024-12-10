@@ -148,7 +148,7 @@ const JobSearch = () => {
               <tr key={index}>
                 <Td>{index + 1}</Td>
                 <Td>{job.title || "No title"}</Td>
-                <Td>{job.location || "No location"}</Td>
+                <Td>{job.locations || "No location"}</Td>
               </tr>
             ))
           ) : (
