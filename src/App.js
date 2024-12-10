@@ -7,7 +7,7 @@ import {
     Route,
 } from "react-router-dom";
 import Home from "./pages";
-import JobSearch from "./pages/JobSearch";
+import JobSearch from "./components/JobSearch";
 import Applications from "./pages/Applications";
 import LogIn from "./components/LogIn";
 import SignUp from "./components/SignUp";
