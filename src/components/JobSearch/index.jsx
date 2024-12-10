@@ -69,11 +69,24 @@ const JobSearch = () => {
     setLoading(true);
     setError("");
     try {
-      const response = await axios.get("/api/jobs/search", {
-        params: { query },
-      });
-      setJobs(response.data.results || []);
+      const response = await axios.post(
+        "http://127.0.0.1:8000/fetch-jobs",
+        {
+          location: query, // Passing the query as the location
+          keywords: query,
+          sort: "relevance",
+          contract_period: "full-time",
+          purpose: "dashboard",
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      setJobs(response.data.job_list || []);
     } catch (err) {
+      console.error("Error fetching jobs:", err); // Log the error for debugging
       setError("Failed to fetch jobs. Please try again.");
     } finally {
       setLoading(false);
@@ -105,11 +118,11 @@ const JobSearch = () => {
         </thead>
         <tbody>
           {jobs.length > 0 ? (
-            jobs.map((job) => (
-              <tr key={job.id}>
-                <Td>{job.id}</Td>
-                <Td>{job.title}</Td>
-                <Td>{job.location}</Td>
+            jobs.map((job, index) => (
+              <tr key={index}>
+                <Td>{index + 1}</Td>
+                <Td>{job.title || "No title"}</Td>
+                <Td>{job.location || "No location"}</Td>
               </tr>
             ))
           ) : (
