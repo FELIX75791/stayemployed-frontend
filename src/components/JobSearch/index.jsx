@@ -70,9 +70,9 @@ const JobSearch = () => {
     setError("");
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/fetch-jobs",
+        "http://127.0.0.1:8000/fetch-jobs", // Correct backend endpoint
         {
-          location: query, // Passing the query as the location
+          location: query,
           keywords: query,
           sort: "relevance",
           contract_period: "full-time",
