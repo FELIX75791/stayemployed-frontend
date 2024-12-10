@@ -145,7 +145,7 @@ const TrackApplications = () => {
                 <Thead>
                     <tr>
                         <Th>Application ID</Th>
-                        <Th>Job ID</Th>
+                        <Th>Job URL</Th>
                         <Th>Status</Th>
                         <Th>Resume URL</Th>
                         <Th>Application Date</Th>
@@ -162,7 +162,7 @@ const TrackApplications = () => {
                         applications.slice(0, 10).map((application) => (
                             <tr key={application.application_id}>
                                 <Td>{application.application_id}</Td>
-                                <Td>{application.job_id}</Td>
+                                <Td>{application.job_url}</Td>
                                 <Td>{application.status}</Td>
                                 <Td>{application.resume_url || "Not provided"}</Td>
                                 <Td>{new Date(application.application_date).toLocaleDateString()}</Td>

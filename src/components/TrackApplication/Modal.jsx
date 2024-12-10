@@ -116,8 +116,9 @@ const Button = styled.button`
     }
 `;
 
+// Modal Component
 const Modal = ({ type, selectedApplication, onClose, refreshApplications }) => {
-    const [jobId, setJobId] = useState(selectedApplication?.job_id || "");
+    const [jobUrl, setJobUrl] = useState(selectedApplication?.job_url || "");
     const [status, setStatus] = useState(selectedApplication?.status || "Applied");
     const [resumeUrl, setResumeUrl] = useState(selectedApplication?.resume_url || "");
     const [notes, setNotes] = useState(selectedApplication?.notes || "");
@@ -138,7 +139,7 @@ const Modal = ({ type, selectedApplication, onClose, refreshApplications }) => {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    job_id: parseInt(jobId),
+                    job_url: jobUrl, // Updated for job_url
                     status,
                     resume_url: resumeUrl,
                     notes,
@@ -158,11 +159,11 @@ const Modal = ({ type, selectedApplication, onClose, refreshApplications }) => {
         <ModalOverlay>
             <ModalContainer>
                 <ModalHeader>{type === "create" ? "Create Application" : "Update Application"}</ModalHeader>
-                <InputLabel>Job ID:</InputLabel>
+                <InputLabel>Job URL:</InputLabel>
                 <Input
-                    type="number"
-                    value={jobId}
-                    onChange={(e) => setJobId(e.target.value)}
+                    type="text"
+                    value={jobUrl}
+                    onChange={(e) => setJobUrl(e.target.value)}
                 />
                 <InputLabel>Status:</InputLabel>
                 <Select
