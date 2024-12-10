@@ -14,7 +14,6 @@ const Title = styled.h1`
 
 const SearchBar = styled.div`
   display: flex;
-  flex-direction: column;
   gap: 10px;
   margin-bottom: 20px;
 `;
@@ -56,8 +55,8 @@ const Td = styled.td`
 `;
 
 const JobSearch = () => {
-  const [keywords, setKeywords] = useState("");
   const [location, setLocation] = useState("");
+  const [keywords, setKeywords] = useState("");
   const [sort, setSort] = useState("relevance");
   const [contractPeriod, setContractPeriod] = useState("full-time");
   const [jobs, setJobs] = useState([]);
@@ -65,8 +64,8 @@ const JobSearch = () => {
   const [error, setError] = useState("");
 
   const fetchJobs = async () => {
-    if (!keywords.trim() || !location.trim()) {
-      setError("Please provide both keywords and location.");
+    if (!keywords.trim()) {
+      setError("Please enter search keywords.");
       return;
     }
 
@@ -103,32 +102,28 @@ const JobSearch = () => {
       <SearchBar>
         <Input
           type="text"
-          placeholder="Enter keywords (e.g., Developer)"
+          placeholder="Keywords (e.g., Developer)"
           value={keywords}
           onChange={(e) => setKeywords(e.target.value)}
         />
         <Input
           type="text"
-          placeholder="Enter location (e.g., New York)"
+          placeholder="Location (e.g., New York)"
           value={location}
           onChange={(e) => setLocation(e.target.value)}
         />
-        <select
+        <Input
+          type="text"
+          placeholder="Sort (e.g., Relevance)"
           value={sort}
           onChange={(e) => setSort(e.target.value)}
-          style={{ padding: "10px", fontSize: "16px" }}
-        >
-          <option value="relevance">Relevance</option>
-          <option value="date">Date</option>
-        </select>
-        <select
+        />
+        <Input
+          type="text"
+          placeholder="Contract Period (e.g., Full-Time)"
           value={contractPeriod}
           onChange={(e) => setContractPeriod(e.target.value)}
-          style={{ padding: "10px", fontSize: "16px" }}
-        >
-          <option value="full-time">Full-Time</option>
-          <option value="part-time">Part-Time</option>
-        </select>
+        />
         <Button onClick={fetchJobs} disabled={loading}>
           {loading ? "Searching..." : "Search"}
         </Button>
@@ -147,7 +142,15 @@ const JobSearch = () => {
             jobs.map((job, index) => (
               <tr key={index}>
                 <Td>{index + 1}</Td>
-                <Td>{job.title || "No title"}</Td>
+                <Td>
+                  {job.url ? (
+                    <a href={job.url} target="_blank" rel="noopener noreferrer">
+                      {job.title || "No title"}
+                    </a>
+                  ) : (
+                    job.title || "No title"
+                  )}
+                </Td>
                 <Td>{job.locations || "No location"}</Td>
               </tr>
             ))
