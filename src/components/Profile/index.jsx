@@ -95,22 +95,6 @@ const Input = styled.input`
     }
 `;
 
-const Textarea = styled.textarea`
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 15px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 14px;
-    resize: vertical;
-
-    &:focus {
-        outline: none;
-        border-color: #5060ff;
-        box-shadow: 0 0 3px rgba(80, 96, 255, 0.5);
-    }
-`;
-
 const Select = styled.select`
     width: 100%;
     padding: 10px;
@@ -153,7 +137,9 @@ const Profile = () => {
     const [error, setError] = useState(null);
     const [isUpdateOpen, setIsUpdateOpen] = useState(false);
     const [resumeUrl, setResumeUrl] = useState("");
-    const [jobPreferences, setJobPreferences] = useState("");
+    const [locationPreference, setLocationPreference] = useState("");
+    const [keywordPreference, setKeywordPreference] = useState("");
+    const [employmentTypePreference, setEmploymentTypePreference] = useState("");
     const [notificationPreference, setNotificationPreference] = useState("enabled");
 
     useEffect(() => {
@@ -178,9 +164,20 @@ const Profile = () => {
                 }
 
                 const data = await response.json();
+
+                // Convert backend enums to frontend-friendly values
+                const employmentType =
+                    data.employment_type_preference === "FullTime"
+                        ? "Full Time"
+                        : data.employment_type_preference === "PartTime"
+                            ? "Part Time"
+                            : "";
+
                 setUserInfo(data);
                 setResumeUrl(data.resume_url || "");
-                setJobPreferences(JSON.stringify(data.job_preferences || {}));
+                setLocationPreference(data.location_preference || "");
+                setKeywordPreference(data.keyword_preference || "");
+                setEmploymentTypePreference(employmentType);
                 setNotificationPreference(data.notification_preference ? "enabled" : "disabled");
             } catch (err) {
                 setError(err.message);
@@ -195,17 +192,31 @@ const Profile = () => {
             const token = localStorage.getItem("authToken");
             if (!token) throw new Error("Not authenticated");
 
+            // Convert frontend-friendly values back to backend-compatible format
+            const employmentType =
+                employmentTypePreference === "Full Time"
+                    ? "FullTime"
+                    : employmentTypePreference === "Part Time"
+                        ? "PartTime"
+                        : null;
+
+            // Construct the update payload dynamically with non-empty fields
+            const updatePayload = {};
+            if (resumeUrl) updatePayload.resume_url = resumeUrl;
+            if (locationPreference) updatePayload.location_preference = locationPreference;
+            if (keywordPreference) updatePayload.keyword_preference = keywordPreference;
+            if (employmentType) updatePayload.employment_type_preference = employmentType; // Send backend-compatible values
+            if (notificationPreference) {
+                updatePayload.notification_preference = notificationPreference === "enabled";
+            }
+
             const response = await fetch(globalVal.userProfileUrl + `/update/${userInfo.user_id}`, {
                 method: "PUT",
                 headers: {
                     Authorization: `Bearer ${token}`,
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({
-                    resume_url: resumeUrl,
-                    job_preferences: JSON.parse(jobPreferences || "{}"),
-                    notification_preference: notificationPreference === "enabled",
-                }),
+                body: JSON.stringify(updatePayload),
             });
 
             if (!response.ok) {
@@ -216,7 +227,17 @@ const Profile = () => {
             }
 
             const updatedData = await response.json();
+
+            // Update frontend state with new data
+            const updatedEmploymentType =
+                updatedData.employment_type_preference === "FullTime"
+                    ? "Full Time"
+                    : updatedData.employment_type_preference === "PartTime"
+                        ? "Part Time"
+                        : "";
+
             setUserInfo(updatedData);
+            setEmploymentTypePreference(updatedEmploymentType);
             setNotificationPreference(updatedData.notification_preference ? "enabled" : "disabled");
             setIsUpdateOpen(false);
             alert("Profile updated successfully!");
@@ -224,6 +245,7 @@ const Profile = () => {
             alert(err.message);
         }
     };
+
 
     if (error) return <p>Error: {error}</p>;
     if (!userInfo) return <p>Loading...</p>;
@@ -234,7 +256,11 @@ const Profile = () => {
             <InfoItem><strong>Name:</strong> {userInfo.name}</InfoItem>
             <InfoItem><strong>Email:</strong> {userInfo.email}</InfoItem>
             <InfoItem><strong>Resume URL:</strong> {userInfo.resume_url || "Not provided"}</InfoItem>
-            <InfoItem><strong>Job Preferences:</strong> {JSON.stringify(userInfo.job_preferences) || "Not specified"}</InfoItem>
+            <InfoItem><strong>Location Preference:</strong> {userInfo.location_preference || "Not specified"}</InfoItem>
+            <InfoItem><strong>Keyword Preference:</strong> {userInfo.keyword_preference || "Not specified"}</InfoItem>
+            <InfoItem>
+                <strong>Employment Type Preference:</strong> {employmentTypePreference || "Not specified"}
+            </InfoItem>
             <InfoItem><strong>Notification Preference:</strong> {notificationPreference === "enabled" ? "Enabled" : "Disabled"}</InfoItem>
             <UpdateButton onClick={() => setIsUpdateOpen(true)}>Update Profile</UpdateButton>
 
@@ -248,12 +274,27 @@ const Profile = () => {
                             value={resumeUrl}
                             onChange={(e) => setResumeUrl(e.target.value)}
                         />
-                        <InputLabel>Job Preferences (JSON string):</InputLabel>
-                        <Textarea
-                            rows="4"
-                            value={jobPreferences}
-                            onChange={(e) => setJobPreferences(e.target.value)}
+                        <InputLabel>Location Preference:</InputLabel>
+                        <Input
+                            type="text"
+                            value={locationPreference}
+                            onChange={(e) => setLocationPreference(e.target.value)}
                         />
+                        <InputLabel>Keyword Preference:</InputLabel>
+                        <Input
+                            type="text"
+                            value={keywordPreference}
+                            onChange={(e) => setKeywordPreference(e.target.value)}
+                        />
+                        <InputLabel>Employment Type Preference:</InputLabel>
+                        <Select
+                            value={employmentTypePreference}
+                            onChange={(e) => setEmploymentTypePreference(e.target.value)}
+                        >
+                            <option value="">Select Employment Type</option>
+                            <option value="Full Time">Full Time</option>
+                            <option value="Part Time">Part Time</option>
+                        </Select>
                         <InputLabel>Notification Preference:</InputLabel>
                         <Select
                             value={notificationPreference}
