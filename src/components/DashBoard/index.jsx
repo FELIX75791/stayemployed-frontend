@@ -1,8 +1,7 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useAuth } from "../../AuthContext";
-import UseDashBoard from "./useDashBoard";
-
+import globalVal from "../../globalVal";
 
 // Styled Components
 const Container = styled.div`
@@ -86,9 +85,51 @@ const EmptyMessage = styled.p`
     color: #666;
 `;
 
-function Dashboard({ userId }) {
+const Button = styled.a`
+    display: inline-block;
+    padding: 10px 20px;
+    margin-top: 10px;
+    background-color: #5060ff;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    &:hover {
+        background-color: #4050d0;
+    }
+`;
+
+function Dashboard() {
     const { token } = useAuth();
-    const { dashboardData, error, loading } = UseDashBoard(userId, token);
+    const [dashboardData, setDashboardData] = useState(null);
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchDashboardData = async () => {
+            try {
+                const response = await fetch(`${globalVal.compositeUrl}/dashboard`, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch dashboard data: ${response.status}`);
+                }
+
+                const data = await response.json();
+                setDashboardData(data);
+            } catch (err) {
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchDashboardData();
+    }, [token]);
 
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error: {error}</p>;
@@ -99,7 +140,7 @@ function Dashboard({ userId }) {
                 <Title>Dashboard</Title>
             </Header>
             <ProfileSection>
-                <Name>{dashboardData.user_profile.name}</Name>
+                <Name>{dashboardData.user_profile.user_name}</Name>
                 <ResumeLink href={dashboardData.user_profile.resume_url} target="_blank">
                     View Resume
                 </ResumeLink>
@@ -127,9 +168,7 @@ function Dashboard({ userId }) {
                                             </a>
                                         </Td>
                                         <Td>{app.status}</Td>
-                                        <Td>
-                                            {new Date(app.application_date).toLocaleDateString()}
-                                        </Td>
+                                        <Td>{new Date(app.application_date).toLocaleDateString()}</Td>
                                     </tr>
                                 ))}
                             </Tbody>
@@ -144,21 +183,23 @@ function Dashboard({ userId }) {
                         <Table>
                             <Thead>
                                 <tr>
-                                    <Th>Job URL</Th>
-                                    <Th>Title</Th>
+                                    <Th>Job Title</Th>
                                     <Th>Company</Th>
+                                    <Th>Location</Th>
+                                    <Th>Job URL</Th>
                                 </tr>
                             </Thead>
                             <Tbody>
                                 {dashboardData.jobs_rec.map((job, index) => (
                                     <tr key={index}>
-                                        <Td>
-                                            <a href={job.job_url} target="_blank" rel="noopener noreferrer">
-                                                {job.job_url}
-                                            </a>
-                                        </Td>
                                         <Td>{job.title}</Td>
                                         <Td>{job.company}</Td>
+                                        <Td>{job.locations}</Td>
+                                        <Td>
+                                            <a href={job.url} target="_blank" rel="noopener noreferrer">
+                                                {job.url}
+                                            </a>
+                                        </Td>
                                     </tr>
                                 ))}
                             </Tbody>
@@ -168,6 +209,7 @@ function Dashboard({ userId }) {
                     )}
                 </TableWrapper>
             </TablesContainer>
+            <Button href="/applyJobs">Apply for More Jobs</Button>
         </Container>
     );
 }
