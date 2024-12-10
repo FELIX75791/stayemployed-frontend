@@ -14,6 +14,7 @@ const Title = styled.h1`
 
 const SearchBar = styled.div`
   display: flex;
+  flex-direction: column;
   gap: 10px;
   margin-bottom: 20px;
 `;
@@ -55,14 +56,17 @@ const Td = styled.td`
 `;
 
 const JobSearch = () => {
-  const [query, setQuery] = useState("");
+  const [keywords, setKeywords] = useState("");
+  const [location, setLocation] = useState("");
+  const [sort, setSort] = useState("relevance");
+  const [contractPeriod, setContractPeriod] = useState("full-time");
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   const fetchJobs = async () => {
-    if (!query.trim()) {
-      setError("Please enter a search query.");
+    if (!keywords.trim() || !location.trim()) {
+      setError("Please provide both keywords and location.");
       return;
     }
 
@@ -70,12 +74,12 @@ const JobSearch = () => {
     setError("");
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/fetch-jobs", // Correct backend endpoint
+        "http://127.0.0.1:8000/fetch-jobs",
         {
-          location: query,
-          keywords: query,
-          sort: "relevance",
-          contract_period: "full-time",
+          location,
+          keywords,
+          sort,
+          contract_period: contractPeriod,
           purpose: "dashboard",
         },
         {
@@ -86,7 +90,7 @@ const JobSearch = () => {
       );
       setJobs(response.data.job_list || []);
     } catch (err) {
-      console.error("Error fetching jobs:", err); // Log the error for debugging
+      console.error("Error fetching jobs:", err);
       setError("Failed to fetch jobs. Please try again.");
     } finally {
       setLoading(false);
@@ -99,10 +103,32 @@ const JobSearch = () => {
       <SearchBar>
         <Input
           type="text"
-          placeholder="Search for jobs..."
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Enter keywords (e.g., Developer)"
+          value={keywords}
+          onChange={(e) => setKeywords(e.target.value)}
         />
+        <Input
+          type="text"
+          placeholder="Enter location (e.g., New York)"
+          value={location}
+          onChange={(e) => setLocation(e.target.value)}
+        />
+        <select
+          value={sort}
+          onChange={(e) => setSort(e.target.value)}
+          style={{ padding: "10px", fontSize: "16px" }}
+        >
+          <option value="relevance">Relevance</option>
+          <option value="date">Date</option>
+        </select>
+        <select
+          value={contractPeriod}
+          onChange={(e) => setContractPeriod(e.target.value)}
+          style={{ padding: "10px", fontSize: "16px" }}
+        >
+          <option value="full-time">Full-Time</option>
+          <option value="part-time">Part-Time</option>
+        </select>
         <Button onClick={fetchJobs} disabled={loading}>
           {loading ? "Searching..." : "Search"}
         </Button>
