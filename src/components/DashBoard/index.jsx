@@ -52,6 +52,7 @@ const TableWrapper = styled.div`
 
 const Table = styled.table`
     width: 100%;
+    table-layout: fixed; /* Ensure the table layout remains consistent */
     border-collapse: collapse;
     margin-top: 20px;
 `;
@@ -71,6 +72,10 @@ const Th = styled.th`
 const Td = styled.td`
     padding: 12px 15px;
     border-bottom: 1px solid #ddd;
+    word-wrap: break-word; /* Allow URL to wrap to the next line */
+    max-width: 200px; /* Optional: Restrict width of the column */
+    overflow: hidden; /* Ensure long URLs are contained */
+    text-overflow: ellipsis; /* Add ellipsis for overflowing text */
 `;
 
 const Title = styled.h2`
@@ -96,6 +101,16 @@ const Button = styled.a`
         background-color: #4050d0;
     }
 `;
+
+// Helper function to extract a domain name from a URL
+const getDomain = (url) => {
+    try {
+        const validUrl = new URL(url);
+        return validUrl.hostname.replace("www.", ""); // Removing "www." for cleaner display
+    } catch (e) {
+        return url; // If the URL is invalid, just return the raw URL
+    }
+};
 
 function Dashboard() {
     const [dashboardData, setDashboardData] = useState(null);
@@ -168,7 +183,7 @@ function Dashboard() {
                                         <Td>{app.application_id}</Td>
                                         <Td>
                                             <a href={app.job_url} target="_blank" rel="noopener noreferrer">
-                                                {app.job_url}
+                                                {getDomain(app.job_url)} {/* Display shortened domain */}
                                             </a>
                                         </Td>
                                         <Td>{app.status}</Td>
@@ -201,7 +216,7 @@ function Dashboard() {
                                         <Td>{job.locations}</Td>
                                         <Td>
                                             <a href={job.url} target="_blank" rel="noopener noreferrer">
-                                                {job.url}
+                                                {getDomain(job.url)} {/* Display shortened domain */}
                                             </a>
                                         </Td>
                                     </tr>

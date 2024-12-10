@@ -47,11 +47,14 @@ const Tbody = styled.tbody``;
 const Th = styled.th`
     padding: 12px 15px;
     border-bottom: 1px solid #ddd;
+    width: 15%;
 `;
 
 const Td = styled.td`
     padding: 12px 15px;
     border-bottom: 1px solid #ddd;
+    word-wrap: break-word; /* Ensures text in the cell wraps */
+    max-width: 200px; /* Adjust this as needed */
 `;
 
 const EmptyRow = styled.tr`
@@ -78,6 +81,13 @@ const PaginationButton = styled(Button)`
         background-color: #ccc;
     }
 `;
+
+const shortenUrl = (url, maxLength = 30) => {
+    if (url && url.length > maxLength) {
+        return url.substring(0, maxLength) + "...";
+    }
+    return url;
+};
 
 const TrackApplications = () => {
     const [applications, setApplications] = useState([]);
@@ -191,9 +201,9 @@ const TrackApplications = () => {
                         applications.map((application) => (
                             <tr key={application.application_id}>
                                 <Td>{application.application_id}</Td>
-                                <Td>{application.job_url}</Td>
+                                <Td>{shortenUrl(application.job_url)}</Td>
                                 <Td>{application.status}</Td>
-                                <Td>{application.resume_url || "Not provided"}</Td>
+                                <Td>{shortenUrl(application.resume_url || "Not provided")}</Td>
                                 <Td>{new Date(application.application_date).toLocaleDateString()}</Td>
                                 <Td>{application.notes || "No notes"}</Td>
                                 <Td>
