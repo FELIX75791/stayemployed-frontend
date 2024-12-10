@@ -63,6 +63,22 @@ const Actions = styled.div`
     gap: 10px;
 `;
 
+const Pagination = styled.div`
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+`;
+
+const PaginationButton = styled(Button)`
+    background-color: #f0f0f0;
+    color: #333;
+    margin: 0 5px;
+
+    &:hover {
+        background-color: #ccc;
+    }
+`;
+
 const TrackApplications = () => {
     const [applications, setApplications] = useState([]);
     const [error, setError] = useState(null);
@@ -70,11 +86,13 @@ const TrackApplications = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalType, setModalType] = useState(""); // "create" or "update"
     const [selectedApplication, setSelectedApplication] = useState(null);
+    const [currentPage, setCurrentPage] = useState(1); // Track current page (starts from 1)
+    const [totalPages, setTotalPages] = useState(1); // Total number of pages
 
     const fetchApplications = async () => {
         try {
             const token = localStorage.getItem("authToken");
-            const response = await fetch(globalVal.appTrackerUrl + "/my_applications?page=1", {
+            const response = await fetch(globalVal.appTrackerUrl + `/my_applications?page=${currentPage}`, {
                 method: "GET",
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -86,13 +104,17 @@ const TrackApplications = () => {
                 if (response.status === 401) throw new Error("Unauthorized. Please log in again.");
                 if (response.status === 404) {
                     setApplications([]);
+                    setTotalPages(1);
                     return;
                 }
                 throw new Error("Failed to fetch applications.");
             }
 
             const data = await response.json();
-            setApplications(data);
+
+            // Assuming backend returns { total_count, applications }
+            setApplications(data.applications || []);
+            setTotalPages(Math.ceil(data.total_count / 10)); // Assuming API returns total_count
         } catch (err) {
             setError(err.message);
         } finally {
@@ -102,7 +124,7 @@ const TrackApplications = () => {
 
     useEffect(() => {
         fetchApplications();
-    }, []);
+    }, [currentPage]); // Re-fetch applications whenever the page changes
 
     const handleCreate = () => {
         setModalType("create");
@@ -135,6 +157,12 @@ const TrackApplications = () => {
         }
     };
 
+    const handlePageChange = (page) => {
+        if (page >= 1 && page <= totalPages) {
+            setCurrentPage(page);
+        }
+    };
+
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error: {error}</p>;
 
@@ -160,7 +188,7 @@ const TrackApplications = () => {
                             <Td colSpan="7">No applications found.</Td>
                         </EmptyRow>
                     ) : (
-                        applications.slice(0, 10).map((application) => (
+                        applications.map((application) => (
                             <tr key={application.application_id}>
                                 <Td>{application.application_id}</Td>
                                 <Td>{application.job_url}</Td>
@@ -183,6 +211,15 @@ const TrackApplications = () => {
                     )}
                 </Tbody>
             </Table>
+            <Pagination>
+                <PaginationButton onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>
+                    Previous
+                </PaginationButton>
+                <span>Page {currentPage} of {totalPages}</span>
+                <PaginationButton onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>
+                    Next
+                </PaginationButton>
+            </Pagination>
             {isModalOpen && (
                 <Modal
                     type={modalType}
