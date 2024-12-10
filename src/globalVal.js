@@ -1,7 +1,7 @@
 const compositeUrl = 'http://localhost:8082';
 const userProfileUrl = 'http://localhost:8080';
 const appTrackerUrl = 'http://localhost:8000';
-const jobSearchUrl = 'http://localhost:8083';
+const jobSearchUrl = 'http://127.0.0.1:8002';
 //const userProfileUrl = 'http://44.211.146.131:8080';
 
 
