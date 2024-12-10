@@ -140,7 +140,6 @@ const Modal = ({ type, selectedApplication, onClose, refreshApplications }) => {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    job_url: jobUrl, // Updated for job_url
                     status,
                     resume_url: resumeUrl,
                     notes,
@@ -160,12 +159,6 @@ const Modal = ({ type, selectedApplication, onClose, refreshApplications }) => {
         <ModalOverlay>
             <ModalContainer>
                 <ModalHeader>{type === "create" ? "Create Application" : "Update Application"}</ModalHeader>
-                <InputLabel>Job URL:</InputLabel>
-                <Input
-                    type="text"
-                    value={jobUrl}
-                    onChange={(e) => setJobUrl(e.target.value)}
-                />
                 <InputLabel>Status:</InputLabel>
                 <Select
                     value={status}
