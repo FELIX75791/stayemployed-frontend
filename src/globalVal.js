@@ -1,4 +1,4 @@
-const compositeUrl = 'http://localhost:8082';
+const compositeUrl = 'http://127.0.0.1:8005';
 const userProfileUrl = 'http://localhost:8080';
 const appTrackerUrl = 'http://localhost:8000';
 const jobSearchUrl = 'http://127.0.0.1:8002';
