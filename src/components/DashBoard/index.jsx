@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { useAuth } from "../../AuthContext";
 import globalVal from "../../globalVal";
 
 // Styled Components
@@ -99,7 +98,6 @@ const Button = styled.a`
 `;
 
 function Dashboard() {
-    const { token } = useAuth();
     const [dashboardData, setDashboardData] = useState(null);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -107,6 +105,12 @@ function Dashboard() {
     useEffect(() => {
         const fetchDashboardData = async () => {
             try {
+                // Fetch token directly from localStorage
+                const token = localStorage.getItem("authToken");
+                if (!token) {
+                    throw new Error("Token is missing. Please log in again.");
+                }
+
                 const response = await fetch(`${globalVal.compositeUrl}/dashboard`, {
                     method: "GET",
                     headers: {
@@ -129,7 +133,7 @@ function Dashboard() {
         };
 
         fetchDashboardData();
-    }, [token]);
+    }, []);
 
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error: {error}</p>;
