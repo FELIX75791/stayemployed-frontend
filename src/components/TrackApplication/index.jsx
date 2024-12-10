@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Modal from "./Modal";
+import globalVal from "../../globalVal";
 
 // Styled Components
 const Container = styled.div`
@@ -73,7 +74,7 @@ const TrackApplications = () => {
     const fetchApplications = async () => {
         try {
             const token = localStorage.getItem("authToken");
-            const response = await fetch("http://localhost:8000/my_applications?page=1", {
+            const response = await fetch(globalVal.appTrackerUrl + "/my_applications?page=1", {
                 method: "GET",
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -118,7 +119,7 @@ const TrackApplications = () => {
     const handleDelete = async (applicationId) => {
         try {
             const token = localStorage.getItem("authToken");
-            const response = await fetch(`http://localhost:8000/my_applications/${applicationId}`, {
+            const response = await fetch(globalVal.appTrackerUrl + `/my_applications/${applicationId}`, {
                 method: "DELETE",
                 headers: {
                     Authorization: `Bearer ${token}`,

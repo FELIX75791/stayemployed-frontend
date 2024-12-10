@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import globalVal from "../../globalVal";
 
 // Styled Components
 const ModalOverlay = styled.div`
@@ -128,8 +129,8 @@ const Modal = ({ type, selectedApplication, onClose, refreshApplications }) => {
             const token = localStorage.getItem("authToken");
             const endpoint =
                 type === "create"
-                    ? "http://localhost:8000/my_applications"
-                    : `http://localhost:8000/my_applications/${selectedApplication.application_id}`;
+                    ? globalVal.appTrackerUrl + "/my_applications"
+                    : globalVal.appTrackerUrl + `/my_applications/${selectedApplication.application_id}`;
             const method = type === "create" ? "POST" : "PATCH";
 
             const response = await fetch(endpoint, {
