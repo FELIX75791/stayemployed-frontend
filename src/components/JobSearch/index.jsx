@@ -14,6 +14,7 @@ const Title = styled.h1`
 
 const SearchBar = styled.div`
   display: flex;
+  flex-wrap: wrap;
   gap: 10px;
   margin-bottom: 20px;
 `;
@@ -22,6 +23,13 @@ const Input = styled.input`
   flex: 1;
   padding: 10px;
   font-size: 16px;
+`;
+
+const Select = styled.select`
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
 `;
 
 const Button = styled.button`
@@ -35,6 +43,11 @@ const Button = styled.button`
 
   &:hover {
     background-color: #4050d0;
+  }
+
+  &:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
   }
 `;
 
@@ -56,6 +69,9 @@ const Td = styled.td`
 
 const JobSearch = () => {
   const [query, setQuery] = useState("");
+  const [location, setLocation] = useState("");
+  const [sort, setSort] = useState("relevance");
+  const [contractPeriod, setContractPeriod] = useState("fulltime");
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -69,14 +85,34 @@ const JobSearch = () => {
     setLoading(true);
     setError("");
     try {
-      const response = await axios.get("/api/jobs/search", {
-        params: { query },
+      const response = await axios.post("/fetch-jobs", {
+        location,
+        keywords: query,
+        sort,
+        contract_period: contractPeriod,
+        purpose: "dashboard",
       });
-      setJobs(response.data.results || []);
+      setJobs(response.data.job_list || []);
     } catch (err) {
-      setError("Failed to fetch jobs. Please try again.");
+      if (err.response && err.response.data && err.response.data.message) {
+        setError(err.response.data.message);
+      } else {
+        setError("Failed to fetch jobs. Please try again.");
+      }
     } finally {
       setLoading(false);
+    }
+  };
+
+  const saveJob = async (job) => {
+    try {
+      await axios.post("/jobs/", {
+        title: job.title,
+        location: job.locations,
+      });
+      alert("Job saved successfully!");
+    } catch (err) {
+      alert("Failed to save job.");
     }
   };
 
@@ -86,10 +122,27 @@ const JobSearch = () => {
       <SearchBar>
         <Input
           type="text"
-          placeholder="Search for jobs..."
+          placeholder="Job title or keywords"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
         />
+        <Input
+          type="text"
+          placeholder="Location"
+          value={location}
+          onChange={(e) => setLocation(e.target.value)}
+        />
+        <Select value={sort} onChange={(e) => setSort(e.target.value)}>
+          <option value="relevance">Relevance</option>
+          <option value="date">Date</option>
+        </Select>
+        <Select
+          value={contractPeriod}
+          onChange={(e) => setContractPeriod(e.target.value)}
+        >
+          <option value="fulltime">Full-time</option>
+          <option value="parttime">Part-time</option>
+        </Select>
         <Button onClick={fetchJobs} disabled={loading}>
           {loading ? "Searching..." : "Search"}
         </Button>
@@ -98,23 +151,27 @@ const JobSearch = () => {
       <Table>
         <thead>
           <tr>
-            <Th>Job ID</Th>
+            <Th>#</Th>
             <Th>Title</Th>
             <Th>Location</Th>
+            <Th>Actions</Th>
           </tr>
         </thead>
         <tbody>
           {jobs.length > 0 ? (
-            jobs.map((job) => (
-              <tr key={job.id}>
-                <Td>{job.id}</Td>
+            jobs.map((job, index) => (
+              <tr key={index}>
+                <Td>{index + 1}</Td>
                 <Td>{job.title}</Td>
-                <Td>{job.location}</Td>
+                <Td>{job.locations}</Td>
+                <Td>
+                  <Button onClick={() => saveJob(job)}>Save</Button>
+                </Td>
               </tr>
             ))
           ) : (
             <tr>
-              <Td colSpan="3" style={{ textAlign: "center" }}>
+              <Td colSpan="4" style={{ textAlign: "center" }}>
                 {loading ? "Loading jobs..." : "No jobs found."}
               </Td>
             </tr>
