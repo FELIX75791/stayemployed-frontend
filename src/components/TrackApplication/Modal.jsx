@@ -133,17 +133,25 @@ const Modal = ({ type, selectedApplication, onClose, refreshApplications }) => {
                     : globalVal.appTrackerUrl + `/my_applications/${selectedApplication.application_id}`;
             const method = type === "create" ? "POST" : "PATCH";
 
+            // Prepare request body
+            const body = {
+                status,
+                resume_url: resumeUrl,
+                notes,
+            };
+
+            // Include job_url only if creating a new application
+            if (type === "create") {
+                body.job_url = jobUrl;
+            }
+
             const response = await fetch(endpoint, {
                 method,
                 headers: {
                     Authorization: `Bearer ${token}`,
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({
-                    status,
-                    resume_url: resumeUrl,
-                    notes,
-                }),
+                body: JSON.stringify(body),
             });
 
             if (!response.ok) throw new Error(`Failed to ${type} application.`);
@@ -151,6 +159,7 @@ const Modal = ({ type, selectedApplication, onClose, refreshApplications }) => {
             onClose();
             refreshApplications(); // Refresh table
         } catch (err) {
+            console.error("Error:", err); // Log error for debugging
             alert(err.message);
         }
     };
@@ -159,6 +168,16 @@ const Modal = ({ type, selectedApplication, onClose, refreshApplications }) => {
         <ModalOverlay>
             <ModalContainer>
                 <ModalHeader>{type === "create" ? "Create Application" : "Update Application"}</ModalHeader>
+                {type === "create" && (
+                    <>
+                        <InputLabel>Job URL:</InputLabel>
+                        <Input
+                            type="text"
+                            value={jobUrl}
+                            onChange={(e) => setJobUrl(e.target.value)}
+                        />
+                    </>
+                )}
                 <InputLabel>Status:</InputLabel>
                 <Select
                     value={status}
