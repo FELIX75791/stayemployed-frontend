@@ -13,7 +13,7 @@ This service is designed to facilitate job searching within our application. It 
 
 This service is built using FastAPI, a modern, fast (high-performance) web framework for building APIs with Python 3.7+ based on standard Python type hints.
 
-Key features of FastAPI used in this service:
+**Key features of FastAPI used in this service:**
 
 Asynchronous Request Handling: FastAPI handles requests asynchronously, ensuring high performance even with many concurrent requests.
 Automatic Validation: Input validation is automatically handled using Pydantic models, ensuring data integrity.
