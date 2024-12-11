@@ -1,70 +1,23 @@
-# Getting Started with Create React App
+# steyemployed-frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This service is designed to facilitate job searching within our application. It allows users to search for jobs using various filters, such as location, job type, and keywords. The service integrates with external job listing APIs to provide up-to-date and relevant job opportunities.
 
-## Available Scripts
+## Responsibilities
 
-In the project directory, you can run:
+Job Search: Users can search for jobs by entering keywords, location, job type, and other parameters.
+Filtering and Sorting: Provides options to filter jobs based on relevance, contract period, and more.
+Integration: Fetches job data from external APIs and formats it for use in the application.
 
-### `npm start`
+### FastAPI
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+This service is built using FastAPI, a modern, fast (high-performance) web framework for building APIs with Python 3.7+ based on standard Python type hints.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+Key features of FastAPI used in this service:
 
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+Asynchronous Request Handling: FastAPI handles requests asynchronously, ensuring high performance even with many concurrent requests.
+Automatic Validation: Input validation is automatically handled using Pydantic models, ensuring data integrity.
+OpenAPI Documentation: FastAPI generates automatic interactive API documentation using Swagger UI, making it easy to interact with the API endpoints and test them.
 
 ### Deployment
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+The service is deployed in a cloud-based environment on AWS ECS. This service is part of the Stay Employed App, ensuring seamless integration with other components of the application.
