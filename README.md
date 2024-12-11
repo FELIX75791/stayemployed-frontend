@@ -6,6 +6,7 @@ This service is designed to facilitate job searching within our application. It 
 **Job Search:** Users can search for jobs by entering keywords, location, job type, and other parameters.
 
 **Filtering and Sorting:** Provides options to filter jobs based on relevance, contract period, and more.
+
 **Integration:** Fetches job data from external APIs and formats it for use in the application.
 
 ## FastAPI
