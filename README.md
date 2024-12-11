@@ -4,11 +4,14 @@ This service is designed to facilitate job searching within our application. It 
 
 ## Responsibilities
 
-Job Search: Users can search for jobs by entering keywords, location, job type, and other parameters.
-Filtering and Sorting: Provides options to filter jobs based on relevance, contract period, and more.
-Integration: Fetches job data from external APIs and formats it for use in the application.
+###Job Search: 
+Users can search for jobs by entering keywords, location, job type, and other parameters.
+###Filtering and Sorting: 
+Provides options to filter jobs based on relevance, contract period, and more.
+###Integration: 
+Fetches job data from external APIs and formats it for use in the application.
 
-### FastAPI
+## FastAPI
 
 This service is built using FastAPI, a modern, fast (high-performance) web framework for building APIs with Python 3.7+ based on standard Python type hints.
 
@@ -18,6 +21,6 @@ Asynchronous Request Handling: FastAPI handles requests asynchronously, ensuring
 Automatic Validation: Input validation is automatically handled using Pydantic models, ensuring data integrity.
 OpenAPI Documentation: FastAPI generates automatic interactive API documentation using Swagger UI, making it easy to interact with the API endpoints and test them.
 
-### Deployment
+## Deployment
 
 The service is deployed in a cloud-based environment on AWS ECS. This service is part of the Stay Employed App, ensuring seamless integration with other components of the application.
