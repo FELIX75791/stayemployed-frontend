@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import styled from "styled-components";
+import globalVal from "../../globalVal";
 
 const Container = styled.div`
   padding: 20px;
@@ -73,13 +74,13 @@ const JobSearch = () => {
     setError("");
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/fetch-jobs",
+          globalVal.jobSearchUrl + "/fetch-jobs",
         {
           location,
           keywords,
           sort,
           contract_period: contractPeriod,
-          purpose: "dashboard",
+          purpose: "search",
         },
         {
           headers: {
