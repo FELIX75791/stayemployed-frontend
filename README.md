@@ -1,24 +1,52 @@
-# steyemployed-frontend
+# StayEmployed Frontend
 
-This service is designed to facilitate job searching within our application. It allows users to search for jobs using various filters, such as location, job type, and keywords. The service integrates with external job listing APIs to provide up-to-date and relevant job opportunities.
+The frontend of StayEmployed provides an intuitive and user-friendly interface for job seekers to interact with the application. It allows users to search for jobs, manage job applications, and update their profiles seamlessly.
 
 ## Responsibilities
-**Job Search:** Users can search for jobs by entering keywords, location, job type, and other parameters.
+**User Interface:** A clean and responsive UI built to enhance user experience across multiple devices.
 
-**Filtering and Sorting:** Provides options to filter jobs based on relevance, contract period, and more.
+**Job Search:** Allows users to search for jobs using filters like location, keywords, and job type.
 
-**Integration:** Fetches job data from external APIs and formats it for use in the application.
+**Application Tracking:** Enables users to keep track of their job applications efficiently.
 
-## FastAPI
+**Profile Management:** Provides users with the ability to update their profile details, preferences, and resume.
 
-This service is built using FastAPI, a modern, fast (high-performance) web framework for building APIs with Python 3.7+ based on standard Python type hints.
+## Technology Stack
+**React:** A JavaScript library for building user interfaces.
 
-**Key features of FastAPI used in this service:**
+**Styled-Components:** For modular and maintainable CSS styling.
 
-Asynchronous Request Handling: FastAPI handles requests asynchronously, ensuring high performance even with many concurrent requests.
-Automatic Validation: Input validation is automatically handled using Pydantic models, ensuring data integrity.
-OpenAPI Documentation: FastAPI generates automatic interactive API documentation using Swagger UI, making it easy to interact with the API endpoints and test them.
+**Axios:** For making HTTP requests to the backend.
+
+**React Router:** For seamless navigation between pages.
+
+**Key features:**
+
+**Job Search Module:** Integrated with the backend to fetch job listings and display results in real time.
+
+**Authentication:** Includes secure login and signup functionality.
+
+**Interactive Dashboard:** A centralized dashboard for users to manage their activities.
+
+**Navigation Bar:** Easy navigation through different sections of the application.
+
+**Styling Improvements:** Modern design elements for a professional and appealing interface.
+
+## Directory Structure
+**AuthProvider:** Handles authentication and user session management.
+
+**JobSearch:** Includes components for the job search feature.
+
+**Dashboard:** Contains components for displaying user activities and summaries.
+
+**Navbar:** Provides navigation functionality across the app.
+
+**Profile:** Includes components for managing user profile and preferences.
+
+**SignUp / LogIn:** Components for user authentication.
+
+**TrackApplication:** Components for tracking job applications.
 
 ## Deployment
 
-The service is deployed in a cloud-based environment on AWS ECS. This service is part of the Stay Employed App, ensuring seamless integration with other components of the application.
+The StayEmployed Frontend is designed to integrate with the StayEmployed Backend and is deployable on modern web hosting platforms.
